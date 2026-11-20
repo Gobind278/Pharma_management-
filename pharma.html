@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #00796b;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 22px;
+        }
+
+        #userInfo {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .logout-btn:hover {
+            background-color: #b71c1c;
+        }
+
+        /* Auth Container */
+        #authSection {
+            max-width: 400px;
+            margin: 60px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        #authSection h2 {
+            text-align: center;
+            color: #00796b;
+            margin-bottom: 20px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .auth-tab.active {
+            color: #00796b;
+            border-bottom: 2px solid #00796b;
+        }
+
+        /* Main App Layout */
+        #appSection {
+            display: none;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation Bar */
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        nav button {
+            background-color: #e0f2f1;
+            color: #00695c;
+            border: 1px solid #b2dfdb;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        nav button:hover, nav button.active {
+            background-color: #00796b;
+            color: white;
+        }
+
+        /* Sections */
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        h2.section-title {
+            color: #00796b;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e0f2f1;
+            padding-bottom: 8px;
+            font-size: 20px;
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #e0f2f1;
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 5px solid #00796b;
+        }
+
+        .stat-card.warning {
+            background: #fff3e0;
+            border-left-color: #f57c00;
+        }
+
+        .stat-card.danger {
+            background: #ffebee;
+            border-left-color: #d32f2f;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #444;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00796b;
+        }
+
+        .btn {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #004d40;
+        }
+
+        .btn-danger {
+            background-color: #d32f2f;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background-color: #b71c1c;
+        }
+
+        .btn-secondary {
+            background-color: #0288d1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #01579b;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #00796b;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Badges & Alerts */
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-ok { background: #c8e6c9; color: #2e7d32; }
+        .badge-low { background: #ffe0b2; color: #ef6c00; }
+        .badge-exp { background: #ffcdd2; color: #c62828; }
+
+        .alert-box {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+
+        .alert-low {
+            background-color: #fff3e0;
+            border-color: #f57c00;
+            color: #e65100;
+        }
+
+        .alert-exp {
+            background-color: #ffebee;
+            border-color: #d32f2f;
+            color: #b71c1c;
+        }
+
+        /* Invoice Box */
+        #invoiceBox {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #00796b;
+            background-color: #fafafa;
+            display: none;
+        }
+
+        .search-bar {
+            margin-bottom: 15px;
+            max-width: 350px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 13px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Pharmacy Management System</h1>
+        <div id="userInfo" style="display: none;">
+            <span>Welcome, <strong id="loggedUserName">Staff</strong></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- User Registration & Login Section -->
+    <div id="authSection">
+        <h2>Staff Portal</h2>
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="loginTabBtn" onclick="switchAuthTab('login')">Login</div>
+            <div class="auth-tab" id="registerTabBtn" onclick="switchAuthTab('register')">Register</div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" required placeholder="Enter username (default: admin)">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" required placeholder="Enter password (default: 1234)">
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">Login to Dashboard</button>
+            <p style="font-size: 12px; color: #666; margin-top: 10px; text-align: center;">
+                Demo Login: <b>admin</b> / <b>1234</b>
+            </p>
+        </form>
+
+        <!-- Registration Form -->
+        <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="regName" required placeholder="e.g. Rahul Sharma">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="regRole">
+                    <option value="Pharmacist">Pharmacist</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Cashier">Cashier</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="regUsername" required placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" required placeholder="Create password">
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">Register Staff</button>
+        </form>
+    </div>
+
+    <!-- Main Application Section -->
+    <div id="appSection">
+        <nav>
+            <button class="nav-btn active" onclick="openTab('dashboardTab', this)">Admin Dashboard</button>
+            <button class="nav-btn" onclick="openTab('inventoryTab', this)">Medicine Inventory</button>
+            <button class="nav-btn" onclick="openTab('billingTab', this)">Sales & Billing</button>
+            <button class="nav-btn" onclick="openTab('purchaseTab', this)">Suppliers & Purchases</button>
+            <button class="nav-btn" onclick="openTab('prescriptionTab', this)">Prescriptions & Customers</button>
+            <button class="nav-btn" onclick="openTab('reportsTab', this)">Sales Reports</button>
+            <button class="nav-btn" onclick="openTab('alertsTab', this)">Notifications (<span id="alertCountBadge">0</span>)</button>
+        </nav>
+
+        <!-- 1. Admin Dashboard -->
+        <div id="dashboardTab" class="tab-content active">
+            <h2 class="section-title">Admin Dashboard & Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Medicines</h3>
+                    <p id="statTotalMeds">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <p id="statTotalSales">₹0.00</p>
+                </div>
+                <div class="stat-card warning">
+                    <h3>Low Stock Alerts</h3>
+                    <p id="statLowStock">0</p>
+                </div>
+                <div class="stat-card danger">
+                    <h3>Expired / Near Expiry</h3>
+                    <p id="statExpired">0</p>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 10px; color: #00796b;">Recent Alerts & Notifications</h3>
+            <div id="dashboardAlerts"></div>
+        </div>
+
+        <!-- 2. Medicine Inventory & Expiry Tracking -->
+        <div id="inventoryTab" class="tab-content">
+            <h2 class="section-title">Medicine Inventory Management & Expiry Tracking</h2>
+            
+            <form onsubmit="addMedicine(event)">
+                <div class="form-grid">
+                    <div>
+                        <label>Medicine Name</label>
+                        <input type="text" id="medName" required placeholder="e.g. Paracetamol 500mg">
+                    </div>
+                    <div>
+                        <label>Category</label>
+                        <select id="medCategory">
+                            <option value="Tablet">Tablet</option>
+                            <option value="Syrup">Syrup</option>
+                            <option value="Capsule">Capsule</option>
+                            <option value="Injection">Injection</option>
+                            <option value="Ointment">Ointment</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Batch Number</label>
+                        <input type="text" id="medBatch" required placeholder="e.g. B102">
+                    </div>
+                    <div>
+                        <label>Price per Unit (₹)</label>
+                        <input type="number" id="medPrice" step="0.01" min="1" required placeholder="e.g. 25">
+                    </div>
+                    <div>
+                        <label>Stock Quantity</label>
+                        <input type="number" id="medStock" min="1" required placeholder="e.g. 50">
+                    </div>
+                    <div>
+                        <label>Expiry Date</label>
+                        <input type="date" id="medExpiry" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn">+ Add Medicine to Inventory</button>
+            </form>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <div class="search-bar">
+                <label>Search Medicine (by Name or Category)</label>
+                <input type="text" id="searchMedInput" onkeyup="renderInventory()" placeholder="Type medicine name to search...">
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Category</th>
+                            <th>Batch</th>
+                            <th>Price (₹)</th>
+                            <th>Stock</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. Sales & Billing (Invoice Generation) -->
+        <div id="billingTab" class="tab-content">
+            <h2 class="section-title">Sales & Billing System</h2>
+            
+            <div class="form-grid">
+                <div>
+                    <label>Customer Name</label>
+                    <input type="text" id="billCustomerName" placeholder="Enter Customer Name">
+                </div>
+                <div>
+                    <label>Customer Phone</label>
+                    <input type="text" id="billCustomerPhone" placeholder="Enter Phone Number">
+                </div>
+                <div>
+                    <label>Select Medicine</label>
+                    <select id="billMedSelect"></select>
+                </div>
+                <div>
+                    <label>Quantity</label>
+                    <input type="number" id="billQty" min="1" value="1">
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addToCart()">+ Add Item to Bill</button>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicine</th>
+                            <th>Unit Price (₹)</th>
+                            <th>Quantity</th>
+                            <th>Total (₹)</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody"></tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; text-align: right;">
+                <h3>Grand Total: ₹<span id="cartTotal">0.00</span></h3>
+                <button type="button" class="btn" style="margin-top: 10px;" onclick="generateInvoice()">Complete Sale & Generate Invoice</button>
+            </div>
+
+            <!-- Generated Invoice Display -->
+            <div id="invoiceBox">
+                <h3 style="text-align: center; color: #00796b;">TAX INVOICE - PHARMACY MANAGEMENT SYSTEM</h3>
+                <p style="text-align: center; font-size: 13px; margin-bottom: 15px;">Official Customer Receipt</p>
+                <div id="invoiceDetails"></div>
+                <button class="btn btn-secondary" style="margin-top: 15px;" onclick="window.print()">Print Invoice</button>
+            </div>
+        </div>
+
+        <!-- 4. Supplier Management & Purchase Records -->
+        <div id="purchaseTab" class="tab-content">
+            <h2 class="section-title">Supplier Management & Purchase Records</h2>
+            
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 25px;">
+                <!-- Add Supplier -->
+                <div>
+                    <h3 style="margin-bottom: 10px; font-size: 16px;">Add New Supplier</h3>
+                    <form onsubmit="addSupplier(event)">
+                        <div class="form-group">
+                            <label>Supplier / Agency Name</label>
+                            <input type="text" id="supName" required placeholder="e.g. MedPlus Distributors">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" id="supContact" required placeholder="e.g. 9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label>Email / Address</label>
+                            <input type="text" id="supAddress" required placeholder="e.g. Ludhiana, Punjab">
+                        </div>
+                        <button type="submit" class="btn">Save Supplier</button>
+                    </form>
+                </div>
+
+                <!-- Record Purchase -->
+                <div>
+                    <h3 style="margin-bottom: 10px; font-size: 16px;">Record Medicine Purchase (Restock)</h3>
+                    <form onsubmit="recordPurchase(event)">
+                        <div class="form-group">
+                            <label>Select Supplier</label>
+                            <select id="purchaseSupplierSelect" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Medicine to Restock</label>
+                            <select id="purchaseMedSelect" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity Purchased</label>
+                            <input type="number" id="purchaseQty" min="1" required placeholder="e.g. 100">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Purchase Cost (₹)</label>
+                            <input type="number" id="purchaseCost" min="1" required placeholder="e.g. 1500">
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Record Purchase & Update Stock</button>
+                    </form>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 20px; font-size: 16px;">Registered Suppliers</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody id="supplierTableBody"></tbody>
+                </table>
+            </div>
+
+            <h3 style="margin-top: 20px; font-size: 16px;">Purchase History</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Medicine</th>
+                            <th>Qty Added</th>
+                            <th>Total Cost (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="purchaseTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. Prescription Handling & Customer Records -->
+        <div id="prescriptionTab" class="tab-content">
+            <h2 class="section-title">Prescription Handling & Customer Records</h2>
+            
+            <form onsubmit="addPrescription(event)">
+                <div class="form-grid">
+                    <div>
+                        <label>Patient / Customer Name</label>
+                        <input type="text" id="presPatientName" required placeholder="Enter Patient Name">
+                    </div>
+                    <div>
+                        <label>Phone Number</label>
+                        <input type="text" id="presPhone" required placeholder="Enter Contact Number">
+                    </div>
+                    <div>
+                        <label>Doctor Name</label>
+                        <input type="text" id="presDoctor" required placeholder="e.g. Dr. Verma">
+                    </div>
+                    <div>
+                        <label>Prescribed Medicines & Dosage</label>
+                        <input type="text" id="presNotes" required placeholder="e.g. Amoxicillin 500mg (1-0-1)">
+                    </div>
+                </div>
+                <button type="submit" class="btn">Save Prescription Record</button>
+            </form>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Patient Name</th>
+                            <th>Phone</th>
+                            <th>Doctor</th>
+                            <th>Prescribed Medicines</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prescriptionTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 6. Sales Reports -->
+        <div id="reportsTab" class="tab-content">
+            <h2 class="section-title">Sales Management & Reports</h2>
+            <p style="margin-bottom: 10px;">Complete history of all customer bills and pharmacy sales.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Date</th>
+                            <th>Customer Name</th>
+                            <th>Items Sold</th>
+                            <th>Total Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesReportTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 7. Notifications (Low Stock & Expiry Alerts) -->
+        <div id="alertsTab" class="tab-content">
+            <h2 class="section-title">System Notifications (Low Stock & Expiry Alerts)</h2>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #555;">
+                Medicines with stock less than <b>15 units</b> or expiring within <b>30 days</b> appear automatically here.
+            </p>
+            <div id="notificationsList"></div>
+        </div>
+    </div>
+
+    <footer>
+        Pharmacy Management System | B.Tech 1st Year Web Development Project
+    </footer>
+
+    <script>
+        // --- INITIAL DATA (Stored in LocalStorage so data stays saved on refresh) ---
+        const defaultUsers = [
+            { name: "Admin Staff", role: "Admin", username: "admin", password: "1234" }
+        ];
+
+        const defaultMedicines = [
+            { id: 101, name: "Paracetamol 500mg", category: "Tablet", batch: "B101", price: 20, stock: 80, expiry: "2027-08-15" },
+            { id: 102, name: "Amoxicillin 250mg", category: "Capsule", batch: "B204", price: 65, stock: 10, expiry: "2027-03-10" },
+            { id: 103, name: "Cough Syrup 100ml", category: "Syrup", batch: "S509", price: 95, stock: 25, expiry: "2026-11-25" },
+            { id: 104, name: "Vitamin C Chewable", category: "Tablet", batch: "V302", price: 40, stock: 8, expiry: "2026-11-10" }
+        ];
+
+        const defaultSuppliers = [
+            { name: "Apollo Wholesale Pharma", contact: "98140-12345", address: "Jalandhar, Punjab" },
+            { name: "CareWell Distributors", contact: "98765-54321", address: "Ludhiana, Punjab" }
+        ];
+
+        let users = JSON.parse(localStorage.getItem("pms_users")) || defaultUsers;
+        let medicines = JSON.parse(localStorage.getItem("pms_medicines")) || defaultMedicines;
+        let suppliers = JSON.parse(localStorage.getItem("pms_suppliers")) || defaultSuppliers;
+        let purchases = JSON.parse(localStorage.getItem("pms_purchases")) || [];
+        let prescriptions = JSON.parse(localStorage.getItem("pms_prescriptions")) || [];
+        let sales = JSON.parse(localStorage.getItem("pms_sales")) || [];
+        let cart = [];
+
+        function saveData() {
+            localStorage.setItem("pms_users", JSON.stringify(users));
+            localStorage.setItem("pms_medicines", JSON.stringify(medicines));
+            localStorage.setItem("pms_suppliers", JSON.stringify(suppliers));
+            localStorage.setItem("pms_purchases", JSON.stringify(purchases));
+            localStorage.setItem("pms_prescriptions", JSON.stringify(prescriptions));
+            localStorage.setItem("pms_sales", JSON.stringify(sales));
+        }
+
+        // --- AUTHENTICATION (REGISTRATION & LOGIN) ---
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById("loginForm").style.display = "block";
+                document.getElementById("registerForm").style.display = "none";
+                document.getElementById("loginTabBtn").classList.add("active");
+                document.getElementById("registerTabBtn").classList.remove("active");
+            } else {
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("registerForm").style.display = "block";
+                document.getElementById("registerTabBtn").classList.add("active");
+                document.getElementById("loginTabBtn").classList.remove("active");
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById("regName").value.trim();
+            const role = document.getElementById("regRole").value;
+            const username = document.getElementById("regUsername").value.trim();
+            const password = document.getElementById("regPassword").value;
+
+            if (users.some(u => u.username === username)) {
+                alert("Username already exists! Please choose another.");
+                return;
+            }
+
+            users.push({ name, role, username, password });
+            saveData();
+            alert("Registration successful! You can now login.");
+            document.getElementById("registerForm").reset();
+            switchAuthTab('login');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById("loginUsername").value.trim();
+            const password = document.getElementById("loginPassword").value;
+
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                sessionStorage.setItem("pms_loggedUser", JSON.stringify(user));
+                showApp(user);
+            } else {
+                alert("Invalid Username or Password! Try admin / 1234");
+            }
+        }
+
+        function showApp(user) {
+            document.getElementById("authSection").style.display = "none";
+            document.getElementById("appSection").style.display = "block";
+            document.getElementById("userInfo").style.display = "flex";
+            document.getElementById("loggedUserName").innerText = `${user.name} (${user.role})`;
+            refreshAllUI();
+        }
+
+        function logout() {
+            sessionStorage.removeItem("pms_loggedUser");
+            document.getElementById("appSection").style.display = "none";
+            document.getElementById("userInfo").style.display = "none";
+            document.getElementById("authSection").style.display = "block";
+        }
+
+        // --- TAB NAVIGATION ---
+        function openTab(tabId, btnElement) {
+            const contents = document.querySelectorAll(".tab-content");
+            contents.forEach(c => c.classList.remove("active"));
+
+            const buttons = document.querySelectorAll(".nav-btn");
+            buttons.forEach(b => b.classList.remove("active"));
+
+            document.getElementById(tabId).classList.add("active");
+            btnElement.classList.add("active");
+            refreshAllUI();
+        }
+
+        // --- MEDICINE INVENTORY & EXPIRY TRACKING ---
+        function addMedicine(e) {
+            e.preventDefault();
+            const name = document.getElementById("medName").value.trim();
+            const category = document.getElementById("medCategory").value;
+            const batch = document.getElementById("medBatch").value.trim();
+            const price = parseFloat(document.getElementById("medPrice").value);
+            const stock = parseInt(document.getElementById("medStock").value);
+            const expiry = document.getElementById("medExpiry").value;
+
+            const newId = medicines.length > 0 ? Math.max(...medicines.map(m => m.id)) + 1 : 101;
+            medicines.push({ id: newId, name, category, batch, price, stock, expiry });
+            saveData();
+            e.target.reset();
+            alert("Medicine added successfully!");
+            refreshAllUI();
+        }
+
+        function deleteMedicine(id) {
+            if (confirm("Are you sure you want to delete this medicine?")) {
+                medicines = medicines.filter(m => m.id !== id);
+                saveData();
+                refreshAllUI();
+            }
+        }
+
+        function checkExpiryStatus(expiryDateStr) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const expDate = new Date(expiryDateStr);
+            const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return { status: "Expired", type: "danger" };
+            if (diffDays <= 30) return { status: `Expiring in ${diffDays}d`, type: "danger" };
+            return { status: "Valid", type: "ok" };
+        }
+
+        function renderInventory() {
+            const query = document.getElementById("searchMedInput").value.toLowerCase();
+            const tbody = document.getElementById("inventoryTableBody");
+            tbody.innerHTML = "";
+
+            const filtered = medicines.filter(m => 
+                m.name.toLowerCase().includes(query) || m.category.toLowerCase().includes(query)
+            );
+
+            filtered.forEach(med => {
+                const expCheck = checkExpiryStatus(med.expiry);
+                let statusBadge = `<span class="badge badge-ok">In Stock</span>`;
+                
+                if (expCheck.type === "danger") {
+                    statusBadge = `<span class="badge badge-exp">${expCheck.status}</span>`;
+                } else if (med.stock < 15) {
+                    statusBadge = `<span class="badge badge-low">Low Stock</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${med.id}</td>
+                        <td><strong>${med.name}</strong></td>
+                        <td>${med.category}</td>
+                        <td>${med.batch}</td>
+                        <td>₹${med.price.toFixed(2)}</td>
+                        <td>${med.stock}</td>
+                        <td>${med.expiry}</td>
+                        <td>${statusBadge}</td>
+                        <td><button class="btn btn-danger" onclick="deleteMedicine(${med.id})">Delete</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- BILLING & INVOICE GENERATION ---
+        function populateDropdowns() {
+            const billSelect = document.getElementById("billMedSelect");
+            const purchaseMedSelect = document.getElementById("purchaseMedSelect");
+            const purchaseSupSelect = document.getElementById("purchaseSupplierSelect");
+
+            billSelect.innerHTML = "";
+            purchaseMedSelect.innerHTML = "";
+            purchaseSupSelect.innerHTML = "";
+
+            medicines.forEach(med => {
+                billSelect.innerHTML += `<option value="${med.id}">${med.name} (Stock: ${med.stock} | ₹${med.price})</option>`;
+                purchaseMedSelect.innerHTML += `<option value="${med.id}">${med.name} (Current Stock: ${med.stock})</option>`;
+            });
+
+            suppliers.forEach(sup => {
+                purchaseSupSelect.innerHTML += `<option value="${sup.name}">${sup.name}</option>`;
+            });
+        }
+
+        function addToCart() {
+            const medId = parseInt(document.getElementById("billMedSelect").value);
+            const qty = parseInt(document.getElementById("billQty").value);
+
+            const med = medicines.find(m => m.id === medId);
+            if (!med) return;
+
+            if (qty <= 0 || qty > med.stock) {
+                alert(`Invalid quantity! Available stock is ${med.stock}.`);
+                return;
+            }
+
+            const existingItem = cart.find(item => item.id === medId);
+            if (existingItem) {
+                if (existingItem.qty + qty > med.stock) {
+                    alert("Not enough stock available!");
+                    return;
+                }
+                existingItem.qty += qty;
+            } else {
+                cart.push({ id: med.id, name: med.name, price: med.price, qty: qty });
+            }
+
+            renderCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function renderCart() {
+            const tbody = document.getElementById("cartTableBody");
+            tbody.innerHTML = "";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                        <td>${item.qty}</td>
+                        <td>₹${itemTotal.toFixed(2)}</td>
+                        <td><button class="btn btn-danger" onclick="removeFromCart(${index})">X</button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("cartTotal").innerText = total.toFixed(2);
+        }
+
+        function generateInvoice() {
+            const custName = document.getElementById("billCustomerName").value.trim() || "Walk-in Customer";
+            const custPhone = document.getElementById("billCustomerPhone").value.trim() || "N/A";
+
+            if (cart.length === 0) {
+                alert("Please add at least one medicine to the bill!");
+                return;
+            }
+
+            let grandTotal = 0;
+            let itemsSummary = [];
+
+            // Deduct stock
+            cart.forEach(item => {
+                const med = medicines.find(m => m.id === item.id);
+                if (med) {
+                    med.stock -= item.qty;
+                }
+                grandTotal += item.price * item.qty;
+                itemsSummary.push(`${item.name} (x${item.qty})`);
+            });
+
+            const invoiceId = "INV-" + Math.floor(1000 + Math.random() * 9000);
+            const dateStr = new Date().toLocaleDateString();
+
+            const saleRecord = {
+                invoiceId,
+                date: dateStr,
+                customer: custName,
+                phone: custPhone,
+                items: itemsSummary.join(", "),
+                total: grandTotal
+            };
+
+            sales.push(saleRecord);
+            saveData();
+
+            // Display Invoice
+            const invoiceBox = document.getElementById("invoiceBox");
+            const invoiceDetails = document.getElementById("invoiceDetails");
+            invoiceBox.style.display = "block";
+            invoiceDetails.innerHTML = `
+                <p><strong>Invoice No:</strong> ${invoiceId} | <strong>Date:</strong> ${dateStr}</p>
+                <p><strong>Customer:</strong> ${custName} (${custPhone})</p>
+                <hr style="margin: 10px 0;">
+                <p><strong>Medicines Purchased:</strong> ${saleRecord.items}</p>
+                <h3 style="margin-top: 10px; color: #00796b;">Total Paid: ₹${grandTotal.toFixed(2)}</h3>
+            `;
+
+            cart = [];
+            document.getElementById("billCustomerName").value = "";
+            document.getElementById("billCustomerPhone").value = "";
+            renderCart();
+            refreshAllUI();
+            alert("Sale completed & Invoice generated!");
+        }
+
+        // --- SUPPLIERS & PURCHASES ---
+        function addSupplier(e) {
+            e.preventDefault();
+            const name = document.getElementById("supName").value.trim();
+            const contact = document.getElementById("supContact").value.trim();
+            const address = document.getElementById("supAddress").value.trim();
+
+            suppliers.push({ name, contact, address });
+            saveData();
+            e.target.reset();
+            alert("Supplier added!");
+            refreshAllUI();
+        }
+
+        function recordPurchase(e) {
+            e.preventDefault();
+            const supplier = document.getElementById("purchaseSupplierSelect").value;
+            const medId = parseInt(document.getElementById("purchaseMedSelect").value);
+            const qty = parseInt(document.getElementById("purchaseQty").value);
+            const cost = parseFloat(document.getElementById("purchaseCost").value);
+
+            const med = medicines.find(m => m.id === medId);
+            if (med) {
+                med.stock += qty;
+                purchases.push({
+                    date: new Date().toLocaleDateString(),
+                    supplier,
+                    medicine: med.name,
+                    qty,
+                    cost
+                });
+                saveData();
+                e.target.reset();
+                alert("Purchase recorded and inventory stock updated!");
+                refreshAllUI();
+            }
+        }
+
+        function renderSuppliersAndPurchases() {
+            const supBody = document.getElementById("supplierTableBody");
+            supBody.innerHTML = "";
+            suppliers.forEach(s => {
+                supBody.innerHTML += `<tr><td>${s.name}</td><td>${s.contact}</td><td>${s.address}</td></tr>`;
+            });
+
+            const purBody = document.getElementById("purchaseTableBody");
+            purBody.innerHTML = "";
+            purchases.forEach(p => {
+                purBody.innerHTML += `<tr><td>${p.date}</td><td>${p.supplier}</td><td>${p.medicine}</td><td>+${p.qty}</td><td>₹${p.cost.toFixed(2)}</td></tr>`;
+            });
+        }
+
+        // --- PRESCRIPTIONS ---
+        function addPrescription(e) {
+            e.preventDefault();
+            const patient = document.getElementById("presPatientName").value.trim();
+            const phone = document.getElementById("presPhone").value.trim();
+            const doctor = document.getElementById("presDoctor").value.trim();
+            const notes = document.getElementById("presNotes").value.trim();
+
+            prescriptions.push({
+                date: new Date().toLocaleDateString(),
+                patient,
+                phone,
+                doctor,
+                notes
+            });
+            saveData();
+            e.target.reset();
+            alert("Prescription saved!");
+            renderPrescriptions();
+        }
+
+        function renderPrescriptions() {
+            const tbody = document.getElementById("prescriptionTableBody");
+            tbody.innerHTML = "";
+            prescriptions.forEach(p => {
+                tbody.innerHTML += `<tr><td>${p.date}</td><td>${p.patient}</td><td>${p.phone}</td><td>${p.doctor}</td><td>${p.notes}</td></tr>`;
+            });
+        }
+
+        // --- SALES REPORTS ---
+        function renderSalesReports() {
+            const tbody = document.getElementById("salesReportTableBody");
+            tbody.innerHTML = "";
+            sales.forEach(s => {
+                tbody.innerHTML += `<tr><td>${s.invoiceId}</td><td>${s.date}</td><td>${s.customer}</td><td>${s.items}</td><td>₹${s.total.toFixed(2)}</td></tr>`;
+            });
+        }
+
+        // --- NOTIFICATIONS & DASHBOARD ---
+        function updateDashboardAndAlerts() {
+            let lowStockCount = 0;
+            let expiryCount = 0;
+            let alertsHTML = "";
+
+            medicines.forEach(med => {
+                if (med.stock < 15) {
+                    lowStockCount++;
+                    alertsHTML += `<div class="alert-box alert-low"><strong>Low Stock Alert:</strong> ${med.name} has only <b>${med.stock}</b> units left!</div>`;
+                }
+                const expStatus = checkExpiryStatus(med.expiry);
+                if (expStatus.type === "danger") {
+                    expiryCount++;
+                    alertsHTML += `<div class="alert-box alert-exp"><strong>Expiry Alert:</strong> ${med.name} (Batch: ${med.batch}) is <b>${expStatus.status}</b> (${med.expiry})!</div>`;
+                }
+            });
+
+            if (alertsHTML === "") {
+                alertsHTML = `<p style="color: green;">All medicines are well-stocked and within valid expiry dates.</p>`;
+            }
+
+            const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
+
+            document.getElementById("statTotalMeds").innerText = medicines.length;
+            document.getElementById("statTotalSales").innerText = "₹" + totalRevenue.toFixed(2);
+            document.getElementById("statLowStock").innerText = lowStockCount;
+            document.getElementById("statExpired").innerText = expiryCount;
+            document.getElementById("alertCountBadge").innerText = lowStockCount + expiryCount;
+
+            document.getElementById("dashboardAlerts").innerHTML = alertsHTML;
+            document.getElementById("notificationsList").innerHTML = alertsHTML;
+        }
+
+        function refreshAllUI() {
+            renderInventory();
+            populateDropdowns();
+            renderSuppliersAndPurchases();
+            renderPrescriptions();
+            renderSalesReports();
+            updateDashboardAndAlerts();
+        }
+
+        // Check if already logged in
+        window.onload = function() {
+            const savedUser = JSON.parse(sessionStorage.getItem("pms_loggedUser"));
+            if (savedUser) {
+                showApp(savedUser);
+            }
+        };
+    </script>
+</body>
+</html>
